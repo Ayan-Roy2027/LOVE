@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Letter For You 💌</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;600;700&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'Lato', sans-serif;
+    background: #ffb6c1;
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* ===== FLOATING HEARTS BG ===== */
+  .hearts-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+  }
+
+  .heart-float {
+    position: absolute;
+    bottom: -50px;
+    animation: floatUp linear infinite;
+  }
+
+  @keyframes floatUp {
+    0% {
+      transform: translateY(0) rotate(0deg);
+      opacity: 0.7;
+    }
+    100% {
+      transform: translateY(-110vh) rotate(360deg);
+      opacity: 0;
+    }
+  }
+
+  /* ===== APP WRAPPER ===== */
+  #app {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+  }
+
+  /* ===== ENVELOPE SCREEN ===== */
+  #envelope-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+  }
+
+  .envelope-wrapper {
+    cursor: pointer;
+    text-align: center;
+    user-select: none;
+  }
+
+  .type-text {
+    font-family: 'Dancing Script', cursive;
+    font-size: clamp(1.5rem, 4.5vw, 2.4rem);
+    color: white;
+    text-shadow: 0 2px 12px rgba(180, 0, 50, 0.35);
+    margin-bottom: 32px;
+    min-height: 60px;
+    letter-spacing: 2px;
+  }
+
+  .envelope-svg {
+    width: min(360px, 88vw);
+    filter: drop-shadow(0 10px 35px rgba(180, 0, 80, 0.38));
+    transition: transform 0.35s ease;
+    cursor: pointer;
+    display: block;
+    margin: 0 auto;
+  }
+
+  .envelope-wrapper:hover .envelope-svg {
+    transform: scale(1.05) translateY(-6px);
+  }
+
+  .click-hint {
+    font-family: 'Dancing Script', cursive;
+    color: white;
+    font-size: 1.15rem;
+    margin-top: 20px;
+    opacity: 0.9;
+    animation: pulse 1.8s ease-in-out infinite;
+    text-shadow: 0 1px 6px rgba(180,0,50,0.2);
+  }
+
+  @keyframes pulse {
+    0%, 100% {
+      opacity: 0.6;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.06);
+    }
+  }
+
+  /* ===== SLIDES ===== */
+  #slides-container {
+    display: none;
+    min-height: 100vh;
+  }
+
+  .slide {
+    display: none;
+    min-height: 100vh;
+    padding: 30px 20px 60px;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+
+  .slide.active {
+    display: flex;
+    animation: slideIn 0.55s ease forwards;
+  }
+
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(28px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .letter-card {
+    background: rgba(255, 255, 255, 0.93);
+    border-radius: 26px;
+    padding: clamp(26px, 5vw, 52px);
+    max-width: 700px;
+    width: 100%;
+    box-shadow: 0 12px 55px rgba(180, 0, 80, 0.22);
+    border: 2.5px solid rgba(255, 182, 193, 0.65);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .letter-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, #ff69b4, #ff1493, #ff69b4, #ff69b4);
+    background-size: 200% 100%;
+    animation: shimmer 3s linear infinite;
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: 0% 0%;
+    }
+    100% {
+      background-position: 200% 0%;
+    }
+  }
+
+  .slide-emoji {
+    font-size: clamp(2.6rem, 8vw, 4.2rem);
+    margin-bottom: 14px;
+    display: block;
+    animation: bounce 2.2s ease infinite;
+  }
+
+  @keyframes bounce {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-12px);
+    }
+  }
+
+  .slide-title {
+    font-family: 'Dancing Script', cursive;
+    font-size: clamp(1.7rem, 5vw, 2.7rem);
+    color: #c2185b;
+    margin-bottom: 16px;
+    line-height: 1.3;
+  }
+
+  .slide-message {
+    font-size: clamp(0.95rem, 2.5vw, 1.15rem);
+    color: #555;
+    line-height: 1.85;
+    margin-bottom: 20px;
+    font-style: italic;
+  }
+
+  /* Fixed photo */
+  .photo-placeholder {
+    width: min(240px, 70vw);
+    height: min(240px, 70vw);
+    border-radius: 50%;
+    border: 5px solid #ff69b4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 18px auto;
+    background: transparent;
+    box-shadow: 0 6px 28px rgba(255,20,147,0.32);
+    overflow: hidden;
+  }
+
+  .fixed-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    display: block;
+  }
+
+  /* Nav buttons */
+  .nav-btns {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    margin-top: 28px;
+    flex-wrap: wrap;
+  }
+
+  .btn-next,
+  .btn-prev {
+    font-family: 'Dancing Script', cursive;
+    font-size: 1.2rem;
+    padding: 13px 36px;
+    border-radius: 50px;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    letter-spacing: 0.4px;
+  }
+
+  .btn-next {
+    background: linear-gradient(135deg, #ff69b4, #ff1493);
+    color: white;
+    box-shadow: 0 5px 22px rgba(255, 20, 147, 0.38);
+  }
+
+  .btn-prev {
+    background: white;
+    color: #c2185b;
+    border: 2px solid #ff69b4;
+    box-shadow: 0 2px 12px rgba(255, 20, 147, 0.15);
+  }
+
+  .btn-next:hover {
+    transform: scale(1.07);
+    box-shadow: 0 7px 28px rgba(255,20,147,0.5);
+  }
+
+  .btn-prev:hover {
+    transform: scale(1.05);
+  }
+
+  .slide-counter {
+    font-family: 'Dancing Script', cursive;
+    color: rgba(180, 0, 80, 0.55);
+    font-size: 0.92rem;
+    margin-top: 16px;
+    text-align: center;
+  }
+
+  /* ===== QUESTION CARDS ===== */
+  #final-question,
+  #love-question,
+  #final-reveal {
+    display: none;
+    min-height: 100vh;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    padding: 30px 20px;
+    text-align: center;
+  }
+
+  #final-question.active,
+  #love-question.active,
+  #final-reveal.active {
+    display: flex;
+    animation: slideIn 0.55s ease;
+  }
+
+  .question-card {
+    background: rgba(255, 255, 255, 0.93);
+    border-radius: 26px;
+    padding: clamp(36px, 6vw, 58px) clamp(26px, 5vw, 50px);
+    max-width: 560px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 12px 55px rgba(180, 0, 80, 0.22);
+    border: 2.5px solid rgba(255, 182, 193, 0.65);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .question-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, #ff69b4, #ff1493, #ff69b4);
+    background-size: 200% 100%;
+    animation: shimmer 3s linear infinite;
+  }
+
+  .q-emoji {
+    font-size: 3.8rem;
+    margin-bottom: 16px;
+    display: block;
+    animation: bounce 2s infinite;
+  }
+
+  .q-title {
+    font-family: 'Dancing Script', cursive;
+    font-size: clamp(1.9rem, 5.5vw, 3rem);
+    color: #c2185b;
+    margin-bottom: 30px;
+    line-height: 1.2;
+  }
+
+  .answer-btns {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+    position: relative;
+  }
+
+  .btn-yes {
+    font-family: 'Dancing Script', cursive;
+    font-size: 1.5rem;
+    padding: 15px 48px;
+    border-radius: 50px;
+    border: none;
+    background: linear-gradient(135deg, #ff69b4, #ff1493);
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 5px 22px rgba(255, 20, 147, 0.42);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .btn-yes:hover {
+    transform: scale(1.09);
+    box-shadow: 0 7px 30px rgba(255,20,147,0.55);
+  }
+
+  .btn-no {
+    font-family: 'Dancing Script', cursive;
+    font-size: 1.5rem;
+    padding: 15px 48px;
+    border-radius: 50px;
+    border: 2.5px solid #ff69b4;
+    background: white;
+    color: #c2185b;
+    cursor: pointer;
+    transition: transform 0.35s cubic-bezier(.36,.07,.19,.97);
+    position: relative;
+  }
+
+  .hint-msg {
+    font-family: 'Dancing Script', cursive;
+    color: #f06292;
+    font-size: 1.05rem;
+    margin-top: 18px;
+    min-height: 26px;
+    transition: opacity 0.3s;
+  }
+
+  /* ===== FINAL REVEAL ===== */
+  .reveal-card {
+    background: rgba(255, 255, 255, 0.93);
+    border-radius: 26px;
+    padding: clamp(36px, 6vw, 58px) clamp(26px, 5vw, 50px);
+    max-width: 620px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 12px 60px rgba(180, 0, 80, 0.26);
+    border: 2.5px solid rgba(255, 182, 193, 0.65);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .reveal-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, #ff69b4, #ff1493, #ff69b4);
+    background-size: 200% 100%;
+    animation: shimmer 3s linear infinite;
+  }
+
+  .reveal-msg {
+    font-family: 'Dancing Script', cursive;
+    font-size: clamp(2rem, 5.5vw, 3.2rem);
+    color: #c2185b;
+    animation: glowText 2.2s ease infinite;
+    margin: 10px 0 6px;
+  }
+
+  @keyframes glowText {
+    0%, 100% {
+      text-shadow: 0 0 10px rgba(255,20,147,0.25);
+    }
+    50% {
+      text-shadow: 0 0 28px rgba(255,20,147,0.72), 0 0 6px #ff1493;
+    }
+  }
+
+  .reveal-sub {
+    font-family: 'Dancing Script', cursive;
+    font-size: 1.4rem;
+    color: #e91e8c;
+    margin-top: 14px;
+  }
+
+  /* ===== CONFETTI ===== */
+  .confetti-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 999;
+  }
+
+  .confetti-piece {
+    position: absolute;
+    top: -20px;
+    animation: confettiFall linear forwards;
+  }
+
+  @keyframes confettiFall {
+    to {
+      transform: translateY(110vh) rotate(720deg);
+      opacity: 0;
+    }
+  }
+
+  /* ===== MUSIC CONTROLS ===== */
+  .music-btn {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    background: rgba(255, 255, 255, 0.92);
+    border-radius: 50%;
+    width: 54px;
+    height: 54px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    cursor: pointer;
+    box-shadow: 0 4px 18px rgba(180, 0, 80, 0.28);
+    z-index: 100;
+    border: 2.5px solid #ff69b4;
+    transition: transform 0.2s;
+    overflow: hidden;
+  }
+
+  .music-btn:hover {
+    transform: scale(1.12);
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 480px) {
+    .btn-yes,
+    .btn-no {
+      font-size: 1.25rem;
+      padding: 13px 34px;
+    }
+
+    .answer-btns {
+      flex-direction: column;
+      align-items: center;
+    }
+  }
+</style>
+</head>
+
+<body>
+
+<!-- Floating hearts background -->
+<div class="hearts-bg" id="heartsBg"></div>
+
+<!-- Pre-saved song from VS Code folder -->
+<audio id="bgMusic" src="assets/song.mp3" loop></audio>
+
+<!-- Music button -->
+<div class="music-btn" id="musicBtn" onclick="toggleMusic()" title="Play / Pause">🎶</div>
+
+<div id="app">
+
+  <!-- ======================== ENVELOPE SCREEN ======================== -->
+  <div id="envelope-screen">
+    <div class="envelope-wrapper" onclick="openEnvelope()">
+      <div class="type-text" id="typeText"></div>
+
+      <svg class="envelope-svg" viewBox="0 0 360 250" xmlns="http://www.w3.org/2000/svg">
+        <rect x="10" y="65" width="340" height="175" rx="14" fill="#fff0f5" stroke="#ff69b4" stroke-width="2.5"/>
+        <path d="M10,65 L180,155 L350,65" fill="#ffd6e7" stroke="#ff69b4" stroke-width="2.5" stroke-linejoin="round"/>
+        <path d="M10,240 L140,155" fill="none" stroke="#ff69b4" stroke-width="1.5" opacity="0.45"/>
+        <path d="M350,240 L220,155" fill="none" stroke="#ff69b4" stroke-width="1.5" opacity="0.45"/>
+        <g transform="translate(165,105)">
+          <path d="M15,-6 C15,-14 4,-20 0,-13 C-4,-20 -15,-14 -15,-6 C-15,4 0,20 0,20 C0,20 15,4 15,-6 Z" fill="#ff1493"/>
+        </g>
+        <rect x="65" y="52" width="230" height="22" rx="5" fill="white" stroke="#ffb6c1" stroke-width="1.5"/>
+        <line x1="88" y1="63" x2="272" y2="63" stroke="#ff69b4" stroke-width="1" opacity="0.5"/>
+        <circle cx="30" cy="92" r="4" fill="#ff69b4" opacity="0.3"/>
+        <circle cx="330" cy="92" r="4" fill="#ff69b4" opacity="0.3"/>
+        <circle cx="30" cy="220" r="4" fill="#ff69b4" opacity="0.3"/>
+        <circle cx="330" cy="220" r="4" fill="#ff69b4" opacity="0.3"/>
+      </svg>
+
+      <div class="click-hint">✨ click to open ✨</div>
+    </div>
+  </div>
+
+  <!-- ======================== SLIDES ======================== -->
+  <div id="slides-container">
+
+    <!-- SLIDE 1 -->
+    <div class="slide active" id="slide-1">
+      <div class="letter-card">
+        <span class="slide-emoji">💌</span>
+
+        <div class="slide-title">my dearest love...</div>
+
+        <div class="photo-placeholder">
+          <img src="assets/photo1.jpg" class="fixed-photo" alt="Photo 1">
+        </div>
+
+        <p class="slide-message">
+          from the very first moment I saw you, I knew there was something magical about you.
+          Something that made the whole world a little bit brighter... 🌸
+        </p>
+
+        <div class="nav-btns">
+          <button class="btn-next" onclick="nextSlide()">next 💕</button>
+        </div>
+
+        <div class="slide-counter">slide 1 of 7</div>
+      </div>
+    </div>
+
+    <!-- SLIDE 2 -->
+    <div class="slide" id="slide-2">
+      <div class="letter-card">
+        <span class="slide-emoji">🌸</span>
+
+        <div class="slide-title">the way you make me feel...</div>
+
+        <div class="photo-placeholder">
+          <img src="assets/photo2.jpg" class="fixed-photo" alt="Photo 2">
+        </div>
+
+        <p class="slide-message">
+        
+          You did kala jaadu on me , because you make my heart do the silliest things — butterflies, racing heartbeats,
+          and the stupidest smiles just because you texted me. 🦋
+        </p>
+
+        <div class="nav-btns">
+          <button class="btn-prev" onclick="prevSlide()">← back</button>
+          <button class="btn-next" onclick="nextSlide()">next 💕</button>
+        </div>
+
+        <div class="slide-counter">slide 2 of 7</div>
+      </div>
+    </div>
+
+    <!-- SLIDE 3 -->
+    <div class="slide" id="slide-3">
+      <div class="letter-card">
+        <span class="slide-emoji">🌙</span>
+
+        <div class="slide-title">every little thing about you...</div>
+
+        <div class="photo-placeholder">
+          <img src="assets/photo3.jpg" class="fixed-photo" alt="Photo 3">
+        </div>
+
+        <p class="slide-message">
+          Your laugh, your eyes, the way you care so deeply about everything.
+          I love all the little things that make you, you.You feel like my 7 janam ka patni/bou/wifey. 🌙✨
+        </p>
+
+        <div class="nav-btns">
+          <button class="btn-prev" onclick="prevSlide()">← back</button>
+          <button class="btn-next" onclick="nextSlide()">next 💕</button>
+        </div>
+
+        <div class="slide-counter">slide 3 of 7</div>
+      </div>
+    </div>
+
+    <!-- SLIDE 4 -->
+    <div class="slide" id="slide-4">
+      <div class="letter-card">
+        <span class="slide-emoji">🫂</span>
+
+        <div class="slide-title">you feel like home...</div>
+
+        <div class="photo-placeholder">
+          <img src="assets/photo4.jpg" class="fixed-photo" alt="Photo 4">
+        </div>
+
+        <p class="slide-message">
+          Being with you feels like the safest place in the world.
+          No matter how hard the day was, everything feels okay when I think of you. 🫂💗
+        </p>
+
+        <div class="nav-btns">
+          <button class="btn-prev" onclick="prevSlide()">← back</button>
+          <button class="btn-next" onclick="nextSlide()">next 💕</button>
+        </div>
+
+        <div class="slide-counter">slide 4 of 7</div>
+      </div>
+    </div>
+
+    <!-- SLIDE 5 -->
+    <div class="slide" id="slide-5">
+      <div class="letter-card">
+        <span class="slide-emoji">⭐</span>
+
+        <div class="slide-title">my favourite memory of us...</div>
+
+        <div class="photo-placeholder">
+          <img src="assets/photo5.jpg" class="fixed-photo" alt="Photo 5">
+        </div>
+
+        <p class="slide-message">
+          I replay this memory over and over — because with you,
+          even the most ordinary moments feel extraordinary. You make life feel like a dream. ⭐🎀
+        </p>
+
+        <div class="nav-btns">
+          <button class="btn-prev" onclick="prevSlide()">← back</button>
+          <button class="btn-next" onclick="nextSlide()">next 💕</button>
+        </div>
+
+        <div class="slide-counter">slide 5 of 7</div>
+      </div>
+    </div>
+
+    <!-- SLIDE 6 -->
+    <div class="slide" id="slide-6">
+      <div class="letter-card">
+        <span class="slide-emoji">🌹</span>
+
+        <div class="slide-title">I choose you, every single day...</div>
+
+        <div class="photo-placeholder">
+          <img src="assets/photo6.jpg" class="fixed-photo" alt="Photo 6">
+        </div>
+
+        <p class="slide-message">
+          If I had a thousand lifetimes, I would spend every single one finding my way back to you.
+          You are my choice, always and forever. 🌹❤️
+        </p>
+
+        <div class="nav-btns">
+          <button class="btn-prev" onclick="prevSlide()">← back</button>
+          <button class="btn-next" onclick="nextSlide()">next 💕</button>
+        </div>
+
+        <div class="slide-counter">slide 6 of 7</div>
+      </div>
+    </div>
+
+    <!-- SLIDE 7 -->
+    <div class="slide" id="slide-7">
+      <div class="letter-card">
+        <span class="slide-emoji">💍</span>
+
+        <div class="slide-title">so here's what I want to say...</div>
+
+        <div class="photo-placeholder">
+          <img src="assets/photo7.jpg" class="fixed-photo" alt="Photo 7">
+        </div>
+
+        <p class="slide-message">
+          You are my sunshine on cloudy days, my calm in every storm,
+          my reason to smile every morning. I love you more than words could ever say... 💍✨
+        </p>
+
+        <div class="nav-btns">
+          <button class="btn-prev" onclick="prevSlide()">← back</button>
+          <button class="btn-next" onclick="showFinalQuestion()">did you like it? 💕</button>
+        </div>
+
+        <div class="slide-counter">slide 7 of 7</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ======================== DID YOU LIKE IT? ======================== -->
+  <div id="final-question">
+    <div class="question-card">
+      <span class="q-emoji">🥺</span>
+      <div class="q-title">did you like it? 🌸</div>
+
+      <div class="answer-btns" id="likeBtns">
+        <button class="btn-yes" onclick="showLoveQuestion()">yes!! 💗</button>
+        <button class="btn-no" id="noBtn" onclick="runFromNo()">no 😒</button>
+      </div>
+
+      <p class="hint-msg" id="no-hint"></p>
+    </div>
+  </div>
+
+  <!-- ======================== DO YOU LOVE ME? ======================== -->
+  <div id="love-question">
+    <div class="question-card">
+      <span class="q-emoji">💓</span>
+      <div class="q-title">do you love me? 🥰</div>
+
+      <p style="font-family:'Dancing Script',cursive; color:#999; margin-bottom:24px; font-size:1.1rem;">
+        choose wisely, cutie 😏
+      </p>
+
+      <div class="answer-btns">
+        <button class="btn-yes" onclick="showFinalReveal()">i love you 💖</button>
+        <button class="btn-no" id="hateBtn" onclick="runFromHate()">i hate you 😤</button>
+      </div>
+
+      <p class="hint-msg" id="hate-hint"></p>
+    </div>
+  </div>
+
+  <!-- ======================== FINAL REVEAL ======================== -->
+  <div id="final-reveal">
+    <div class="reveal-card">
+      <div style="font-size:3.5rem; margin-bottom:12px; animation: bounce 2s infinite; display:block;">
+        🥰✨💖
+      </div>
+
+      <div class="reveal-msg">i know you love me, cutiepie!</div>
+
+      <div class="photo-placeholder" style="margin:26px auto;">
+        <img src="assets/final.jpg" class="fixed-photo" alt="Final Photo">
+      </div>
+
+      <p class="reveal-sub">you're stuck with me forever now 🥹💝</p>
+
+      <div style="margin-top:22px; font-size:2rem; animation: bounce 2s infinite; display:block; letter-spacing:6px;">
+        💗💗💗
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Confetti layer -->
+<div class="confetti-container" id="confettiContainer"></div>
+
+<script>
+  // ======================== FLOATING HEARTS ========================
+  const heartsBg = document.getElementById('heartsBg');
+  const heartEmojis = ['💕','💖','💗','💓','💝','🌸','✨','💫','🌷','💞','🌺','🫧'];
+
+  for (let i = 0; i < 26; i++) {
+    const h = document.createElement('div');
+    h.className = 'heart-float';
+    h.textContent = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
+    h.style.cssText = `
+      left: ${Math.random() * 100}%;
+      font-size: ${14 + Math.random() * 20}px;
+      animation-duration: ${8 + Math.random() * 14}s;
+      animation-delay: ${-Math.random() * 14}s;
+      opacity: ${0.35 + Math.random() * 0.45};
+    `;
+    heartsBg.appendChild(h);
+  }
+
+  // ======================== TYPEWRITER ========================
+  const fullText = 'write love to open';
+  let ti = 0;
+  const typeEl = document.getElementById('typeText');
+  let cursorOn = true;
+
+  function typeChar() {
+    if (ti <= fullText.length) {
+      typeEl.textContent = fullText.slice(0, ti) + '|';
+      ti++;
+      setTimeout(typeChar, 105);
+    } else {
+      setInterval(() => {
+        cursorOn = !cursorOn;
+        typeEl.textContent = fullText + (cursorOn ? '|' : '');
+      }, 550);
+    }
+  }
+
+  typeChar();
+
+  // Typing "love" opens envelope
+  let typedBuffer = '';
+
+  document.addEventListener('keydown', e => {
+    if (['Meta','Control','Alt','Shift'].includes(e.key)) return;
+
+    typedBuffer += e.key.toLowerCase();
+
+    if (typedBuffer.includes('love')) {
+      openEnvelope();
+    }
+
+    if (typedBuffer.length > 25) {
+      typedBuffer = typedBuffer.slice(-12);
+    }
+  });
+
+  // ======================== OPEN ENVELOPE ========================
+  function openEnvelope() {
+    const es = document.getElementById('envelope-screen');
+
+    if (es.style.display === 'none') return;
+
+    es.style.display = 'none';
+    document.getElementById('slides-container').style.display = 'block';
+
+    tryPlayMusic();
+  }
+
+  // ======================== SLIDES ========================
+  let currentSlide = 1;
+  const TOTAL_SLIDES = 7;
+
+  function showSlide(n) {
+    document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+
+    const el = document.getElementById('slide-' + n);
+
+    if (el) {
+      el.classList.add('active');
+      currentSlide = n;
+    }
+  }
+
+  function nextSlide() {
+    if (currentSlide < TOTAL_SLIDES) {
+      showSlide(currentSlide + 1);
+    }
+  }
+
+  function prevSlide() {
+    if (currentSlide > 1) {
+      showSlide(currentSlide - 1);
+    }
+  }
+
+  // ======================== MUSIC ========================
+  const bgMusic = document.getElementById('bgMusic');
+  let musicPlaying = false;
+
+  function tryPlayMusic() {
+    bgMusic.play()
+      .then(() => {
+        musicPlaying = true;
+        updateMusicBtn();
+      })
+      .catch(() => {
+        musicPlaying = false;
+        updateMusicBtn();
+      });
+  }
+
+  function toggleMusic() {
+    if (bgMusic.paused) {
+      bgMusic.play()
+        .then(() => {
+          musicPlaying = true;
+          updateMusicBtn();
+        })
+        .catch(() => {
+          musicPlaying = false;
+          updateMusicBtn();
+        });
+    } else {
+      bgMusic.pause();
+      musicPlaying = false;
+      updateMusicBtn();
+    }
+  }
+
+  function updateMusicBtn() {
+    document.getElementById('musicBtn').textContent = musicPlaying ? '⏸️' : '🎶';
+  }
+
+  // ======================== FINAL QUESTION: DID YOU LIKE IT? ========================
+  function showFinalQuestion() {
+    document.getElementById('slides-container').style.display = 'none';
+    document.getElementById('final-question').classList.add('active');
+  }
+
+  const noMessages = [
+    "nope! try again 🥺",
+    "that button doesn't work, silly 💕",
+    "wrong answer, cutie 😘",
+    "try the other one 💗",
+    "nooo come on!! 🌸",
+    "the YES button is right there 👀",
+    "okayyy but like... really? 🥹",
+    "i'll wait... 😌",
+    "are you sure sure? 💭",
+    "yeah i didn't think so 😂💖",
+    "stop it!! click yes!! 🫶",
+    "i made this whole thing for youuu 🥲"
+  ];
+
+  let noCount = 0;
+
+  function runFromNo() {
+    noCount++;
+
+    document.getElementById('no-hint').textContent =
+      noMessages[Math.min(noCount - 1, noMessages.length - 1)];
+
+    const btn = document.getElementById('noBtn');
+    const card = btn.closest('.question-card');
+
+    const cw = card.offsetWidth;
+    const ch = card.offsetHeight;
+    const bw = btn.offsetWidth;
+    const bh = btn.offsetHeight;
+
+    const rx = (Math.random() - 0.5) * Math.min(cw - bw - 40, 180);
+    const ry = (Math.random() - 0.5) * Math.min(ch * 0.3, 80);
+
+    btn.style.transition = 'transform 0.32s cubic-bezier(.36,.07,.19,.97)';
+    btn.style.transform = `translate(${rx}px, ${ry}px) scale(0.88) rotate(${(Math.random()-0.5)*18}deg)`;
+
+    setTimeout(() => {
+      btn.style.transform = '';
+    }, 800);
+  }
+
+  // ======================== LOVE QUESTION ========================
+  function showLoveQuestion() {
+    document.getElementById('final-question').classList.remove('active');
+    document.getElementById('love-question').classList.add('active');
+  }
+
+  const hateMessages = [
+    "liar! 😂 try again",
+    "you DO love me 😏",
+    "nuh uh!! 💕",
+    "click the other one 🥺",
+    "ouch... just kidding, we know the truth 😘",
+    "lies!!! 🌸",
+    "i'm not moving till you pick the right one 😌",
+    "your heart says otherwise 💗",
+    "try aaagain 🥹",
+    "okay this is adorable but LOVE ME 😂💖",
+    "is your finger okay from all that clicking? 🫶",
+    "the i love you button misses you 🥲",
+    "fine... take your time 😇💕"
+  ];
+
+  let hateCount = 0;
+
+  function runFromHate() {
+    hateCount++;
+
+    document.getElementById('hate-hint').textContent =
+      hateMessages[Math.min(hateCount - 1, hateMessages.length - 1)];
+
+    const btn = document.getElementById('hateBtn');
+    const card = btn.closest('.question-card');
+
+    const cw = card.offsetWidth;
+    const ch = card.offsetHeight;
+    const bw = btn.offsetWidth;
+
+    const rx = (Math.random() - 0.5) * Math.min(cw - bw - 30, 160);
+    const ry = (Math.random() - 0.5) * Math.min(ch * 0.28, 70);
+
+    btn.style.transition = 'transform 0.38s cubic-bezier(.36,.07,.19,.97)';
+    btn.style.transform = `translate(${rx}px, ${ry}px) scale(0.85) rotate(${(Math.random()-0.5)*22}deg)`;
+
+    setTimeout(() => {
+      btn.style.transform = '';
+    }, 750);
+  }
+
+  // ======================== FINAL REVEAL ========================
+  function showFinalReveal() {
+    document.getElementById('love-question').classList.remove('active');
+    document.getElementById('final-reveal').classList.add('active');
+
+    launchConfetti();
+  }
+
+  function launchConfetti() {
+    const colors = [
+      '#ff69b4',
+      '#ff1493',
+      '#ffb6c1',
+      '#ffd700',
+      '#ff6b9d',
+      '#c0392b',
+      '#ffb347',
+      '#ff85b3',
+      '#fff0f5'
+    ];
+
+    const container = document.getElementById('confettiContainer');
+
+    for (let i = 0; i < 100; i++) {
+      setTimeout(() => {
+        const c = document.createElement('div');
+        c.className = 'confetti-piece';
+
+        const size = 6 + Math.random() * 10;
+
+        c.style.cssText = `
+          left: ${Math.random() * 100}%;
+          width: ${size}px;
+          height: ${size}px;
+          background: ${colors[Math.floor(Math.random() * colors.length)]};
+          border-radius: ${Math.random() > 0.5 ? '50%' : '3px'};
+          animation-duration: ${1.8 + Math.random() * 2.2}s;
+          animation-delay: ${Math.random() * 0.6}s;
+          opacity: ${0.7 + Math.random() * 0.3};
+        `;
+
+        container.appendChild(c);
+
+        setTimeout(() => c.remove(), 5000);
+      }, i * 35);
+    }
+
+    setTimeout(() => {
+      for (let i = 0; i < 60; i++) {
+        setTimeout(() => {
+          const c = document.createElement('div');
+          c.className = 'confetti-piece';
+
+          const size = 5 + Math.random() * 8;
+
+          c.style.cssText = `
+            left: ${Math.random() * 100}%;
+            width: ${size}px;
+            height: ${size}px;
+            background: ${colors[Math.floor(Math.random() * colors.length)]};
+            border-radius: ${Math.random() > 0.5 ? '50%' : '3px'};
+            animation-duration: ${2 + Math.random() * 2}s;
+            opacity: 0.8;
+          `;
+
+          container.appendChild(c);
+
+          setTimeout(() => c.remove(), 5000);
+        }, i * 40);
+      }
+    }, 1200);
+  }
+</script>
+
+</body>
+</html>
